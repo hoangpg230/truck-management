@@ -1,5 +1,5 @@
-import { Form, Input, Button, Typography, Select } from 'antd'
-import { useState } from 'react'
+import { Form, Input, Button, Typography, Select, AutoComplete } from 'antd'
+import { useEffect, useState } from 'react'
 
 const { TextArea } = Input
 const { Text } = Typography
@@ -9,10 +9,18 @@ function FormTruck({ id, truck, onFinish }) {
   const [lengthDesc, setLengthDesc] = useState(0)
   const [lengthParkingAddress, setLengthParkingAddress] = useState(0)
   const [optionsSelected, setOptionsSelected] = useState([])
+  const [result, setResult] = useState([])
 
   if (id) {
     var { truckPlate, cargoType, diver, pakingAddress, description } = truck
   }
+
+  useEffect(() => {
+    if (id) {
+      setLengthDesc(description.length)
+      setLengthParkingAddress(pakingAddress.length)
+    }
+  }, [truck])
 
   const children = []
   for (let i = 10; i < 36; i++) {
@@ -44,9 +52,24 @@ function FormTruck({ id, truck, onFinish }) {
     setLengthParkingAddress(e.target.value.length)
   }
 
+  const handleSearchAutoComplete = (value) => {
+    let res = []
+
+    if (!value) {
+      res = []
+    } else {
+      res = ['Jack', 'Jonh', 'Lucy'].filter((element) =>
+        element.toLowerCase().includes(value.toLowerCase())
+      )
+    }
+
+    setResult(res)
+  }
+
   const handleFinish = (values) => {
     onFinish(values)
   }
+
   return (
     <Form
       initialValues={
@@ -120,18 +143,16 @@ function FormTruck({ id, truck, onFinish }) {
           },
         ]}
       >
-        <Select
-          showSearch
-          placeholder="Select a driver"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+        <AutoComplete
+          onSearch={handleSearchAutoComplete}
+          placeholder="input here"
         >
-          <Option value="jack">Jack</Option>
-          <Option value="lucy">Lucy</Option>
-          <Option value="tom">Tom</Option>
-        </Select>
+          {result.map((email) => (
+            <Option key={email} value={email}>
+              {email}
+            </Option>
+          ))}
+        </AutoComplete>
       </Form.Item>
 
       <Form.Item
@@ -143,8 +164,8 @@ function FormTruck({ id, truck, onFinish }) {
         name="pakingAddress"
         rules={[
           {
-            max: 15,
-            message: 'Max length is 15 characters!',
+            max: 200,
+            message: 'Max length is 200 characters!',
           },
         ]}
         style={{ margin: 0 }}
@@ -154,7 +175,6 @@ function FormTruck({ id, truck, onFinish }) {
           onChange={handleOnChangePakingAddress}
           rows={4}
           placeholder="maxLength is 200"
-          maxLength={200}
         />
       </Form.Item>
       <Form.Item
@@ -174,8 +194,8 @@ function FormTruck({ id, truck, onFinish }) {
         name="description"
         rules={[
           {
-            max: 15,
-            message: 'Max length is 15 characters!',
+            max: 200,
+            message: 'Max length is 200 characters!',
           },
         ]}
         style={{ margin: 0 }}
@@ -194,6 +214,7 @@ function FormTruck({ id, truck, onFinish }) {
       >
         <Text>{`${lengthDesc} / 200`}</Text>
       </Form.Item>
+
       <Form.Item>
         <Button type="primary" htmlType="submit">
           Save

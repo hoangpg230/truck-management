@@ -11,8 +11,9 @@ import {
 import { Breadcrumb } from 'antd'
 
 import Main from './pages/Main'
-import common from '../../utils/common'
 import Create from './pages/Create'
+
+import common from '../../utils/common'
 
 function TruckManagement(props) {
   const route = useLocation()

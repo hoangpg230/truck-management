@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { getTruck } from '../../../../actions/truck'
 import FormTruck from '../../components/FormTruck'
+
 import './Create.css'
 
 const { Title } = Typography
@@ -21,17 +22,16 @@ const Create = () => {
     if (isSubmit && !requesting && error) {
       alert('error')
     } else if (isSubmit && !requesting && !error) {
-      alert('sussus')
+      alert('success')
+      navigate('/truck')
     }
   }, [requesting, error])
 
   // Update
   const { id } = useParams()
-  const location = useLocation()
 
   useEffect(() => {
     if (id) {
-      console.log('render')
       const action = () => ({ type: '_GET_TRUCK', payload: id })
       dispatch(action())
       return () => {
@@ -40,9 +40,6 @@ const Create = () => {
       }
     }
   }, [])
-  useEffect(() => {
-    navigate(location.pathname)
-  }, [truck])
 
   const onFinish = (values) => {
     if (id) {

@@ -22,7 +22,6 @@ const truckReducer = (state = initState, action) => {
       state.requesting = false
       return { ...state }
     case 'GET_TRUCK':
-      console.log(state.truck)
       state.truck = action.payload
       state.requesting = false
       return { ...state }
