@@ -17,12 +17,12 @@ const truckReducer = (state = initState, action) => {
       state.requesting = true
       return { ...state }
     case 'GET_ALL_TRUCK':
-      console.log('all')
-      state.trucks = common.transformArray([...action.payload])
+      state.trucks = common.transformArray([...action.payload]).reverse()
       tmpTrucks = state.trucks
       state.requesting = false
       return { ...state }
     case 'GET_TRUCK':
+      console.log(state.truck)
       state.truck = action.payload
       state.requesting = false
       return { ...state }
@@ -41,11 +41,18 @@ const truckReducer = (state = initState, action) => {
       return { ...state }
 
     case 'SEARCH_TEXT':
-      state.trucks = tmpTrucks.filter((e) =>
-        e[action.payload.type]
+      state.trucks = tmpTrucks.filter((e) => {
+        if (action.payload.type === 'cargoType') {
+          return e[action.payload.type].find((e) =>
+            e
+              .toLocaleLowerCase()
+              .includes(action.payload.value.toLocaleLowerCase())
+          )
+        }
+        return e[action.payload.type]
           .toLocaleLowerCase()
           .includes(action.payload.value.toLocaleLowerCase())
-      )
+      })
       return { ...state }
     default:
       return state

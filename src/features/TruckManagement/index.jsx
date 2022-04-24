@@ -1,5 +1,12 @@
 import React from 'react'
-import { Routes, Route, Outlet, useLocation, Link } from 'react-router-dom'
+import {
+  Routes,
+  Route,
+  Outlet,
+  useLocation,
+  Link,
+  Navigate,
+} from 'react-router-dom'
 
 import { Breadcrumb } from 'antd'
 
@@ -47,6 +54,8 @@ function TruckManagement(props) {
       <Routes>
         <Route path="" element={<Main />}></Route>
         <Route path="add" element={<Create />}></Route>
+        <Route path="update/:id" element={<Create />}></Route>
+        <Route path="*" element={<Navigate to={'/notfound'} replace />}></Route>
       </Routes>
     </>
   )

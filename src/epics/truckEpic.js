@@ -13,7 +13,9 @@ import truckApi from '../api/truckApi'
 
 const requesting = () => ({ type: 'TRUCK_REQUEST' })
 const getAllTruck = (payload) => ({ type: 'GET_ALL_TRUCK', payload })
+const getTruck = (payload) => ({ type: 'GET_TRUCK', payload })
 const addTruck = () => ({ type: 'ADD_TRUCK' })
+const updateTruck = () => ({ type: 'UPDATE_TRUCK' })
 const deleteTruck = () => ({ type: 'DELETE_TRUCK' })
 
 export const getAllTruckEpic = (action$) =>
@@ -30,6 +32,22 @@ export const getAllTruckEpic = (action$) =>
       )
     ),
     startWith(requesting())
+  )
+
+export const getTruckEpic = (action$) =>
+  action$.pipe(
+    ofType('_GET_TRUCK'),
+    switchMap((action) =>
+      from(truckApi.get(action.payload)).pipe(
+        map(getTruck),
+        catchError((error) => {
+          return of({
+            type: 'ERROR',
+          })
+        }),
+        startWith(requesting())
+      )
+    )
   )
 
 export const deleteTruckEpic = (action$, state$, { store }) =>
@@ -64,4 +82,27 @@ export const addTruckEpic = (action$, state$, { store }) =>
       )
     )
   )
-export default [getAllTruckEpic, addTruckEpic, deleteTruckEpic]
+
+export const updateTruckEpic = (action$) =>
+  action$.pipe(
+    ofType('_UPDATE_TRUCK'),
+    switchMap((action) =>
+      from(truckApi.put(action.payload.id, action.payload)).pipe(
+        map(updateTruck),
+        catchError((error) => {
+          return of({
+            type: 'ERROR',
+          })
+        }),
+        startWith(requesting())
+      )
+    )
+  )
+
+export default [
+  getAllTruckEpic,
+  getTruckEpic,
+  addTruckEpic,
+  updateTruckEpic,
+  deleteTruckEpic,
+]
