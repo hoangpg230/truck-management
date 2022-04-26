@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Table, Space, Button, Modal, Typography } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
@@ -6,9 +6,12 @@ import { Link } from 'react-router-dom'
 
 const { Text } = Typography
 
-export default ({ data, onDeleteRecord }) => {
+export default ({ data, onDeleteRecord, defaultCurrent }) => {
   const [visible, setVisible] = useState(false)
   const [idTruck, setIdTruck] = useState(0)
+  useEffect(() => {
+    console.log(defaultCurrent)
+  })
 
   const onDelete = (id) => {
     showModal()
@@ -102,7 +105,14 @@ export default ({ data, onDeleteRecord }) => {
   ]
   return (
     <>
-      <Table columns={columns} dataSource={data} pagination={{ pageSize: 5 }} />
+      {defaultCurrent && (
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={{ pageSize: 5, defaultCurrent: defaultCurrent }}
+        />
+      )}
+
       <Modal
         title={<Text type="danger">Delete record</Text>}
         visible={visible}

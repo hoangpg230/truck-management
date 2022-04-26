@@ -48,13 +48,19 @@ const typeSeacrh = [
 ]
 
 const Main = () => {
+  const [random, setRandom] = useState(0)
   const [currentSelect, setCurrentSelect] = useState('truckPlate')
   const truckState = useSelector((state) => state.truck)
-  const { trucks, requesting, error } = truckState
+  const { trucks, requesting, error, searchChange, searchText } = truckState
   const dispath = useDispatch()
+
   useEffect(() => {
     dispath({ type: '_GET_ALL_TRUCK' })
   }, [])
+
+  useEffect(() => {
+    setRandom(Math.random())
+  }, [searchChange])
 
   function handleSelectChange(value) {
     setCurrentSelect(value)
@@ -65,8 +71,7 @@ const Main = () => {
       value,
       type: currentSelect,
     }
-    const action = searchTruck(options)
-    dispath(action)
+    dispath({ type: '_SEARCH_TEXT', payload: options })
   }
 
   const handleDeleteRecord = (id) => {
@@ -74,6 +79,11 @@ const Main = () => {
       type: '_DELETE_TRUCK',
       payload: id,
     })
+  }
+
+  const handleChangeSearch = (e) => {
+    const value = e.target.value
+    dispath({ type: 'TYPE_SEARCH', payload: value })
   }
 
   return (
@@ -102,6 +112,8 @@ const Main = () => {
                 ))}
               </Select>
               <Search
+                value={searchText}
+                onChange={handleChangeSearch}
                 placeholder="Type here to search..."
                 onSearch={onSearch}
                 enterButton
@@ -109,7 +121,12 @@ const Main = () => {
                 className="mb-2 "
               />
             </div>
-            <Table data={trucks} onDeleteRecord={handleDeleteRecord} />
+            <Table
+              defaultCurrent={1}
+              data={trucks}
+              onDeleteRecord={handleDeleteRecord}
+            />
+            )
           </>
         )}
       </div>

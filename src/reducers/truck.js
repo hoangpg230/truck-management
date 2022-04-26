@@ -6,6 +6,8 @@ const initState = {
   requesting: false,
   success: false,
   error: false,
+  searchChange: false,
+  searchText: '',
 }
 let tmpTrucks = []
 
@@ -38,8 +40,11 @@ const truckReducer = (state = initState, action) => {
       state.requesting = false
       state.error = true
       return { ...state }
-
+    case 'TYPE_SEARCH':
+      state.searchText = action.payload
+      return { ...state }
     case 'SEARCH_TEXT':
+      state.searchChange = !state.searchChange
       state.trucks = tmpTrucks.filter((e) => {
         if (action.payload.type === 'cargoType') {
           return e[action.payload.type].find((e) =>
@@ -52,6 +57,7 @@ const truckReducer = (state = initState, action) => {
           .toLocaleLowerCase()
           .includes(action.payload.value.toLocaleLowerCase())
       })
+      state.requesting = false
       return { ...state }
     default:
       return state

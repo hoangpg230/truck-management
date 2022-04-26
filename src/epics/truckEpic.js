@@ -7,7 +7,7 @@ import {
   map,
   catchError,
 } from 'rxjs/operators'
-import { of, from } from 'rxjs'
+import { of, from, forkJoin, timer } from 'rxjs'
 
 import truckApi from '../api/truckApi'
 
@@ -61,8 +61,8 @@ export const deleteTruckEpic = (action$, state$, { store }) =>
           return of({
             type: 'ERROR',
           })
-        })
-        // startWith(requesting())
+        }),
+        startWith(requesting())
       )
     )
   )
@@ -99,10 +99,28 @@ export const updateTruckEpic = (action$) =>
     )
   )
 
+export const onSearchTruckEpic = (action$, state$, { store }) =>
+  action$.pipe(
+    ofType('_SEARCH_TEXT'),
+    switchMap((action) =>
+      forkJoin([timer(1)]).pipe(
+        map(() => ({ type: 'SEARCH_TEXT', payload: action.payload })),
+        catchError((error) => {
+          console.log(error)
+          return of({
+            type: 'ERROR',
+          })
+        }),
+        startWith(requesting())
+      )
+    )
+  )
+
 export default [
   getAllTruckEpic,
   getTruckEpic,
   addTruckEpic,
   updateTruckEpic,
   deleteTruckEpic,
+  onSearchTruckEpic,
 ]

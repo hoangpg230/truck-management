@@ -1,11 +1,13 @@
 import { Form, Input, Button, Typography, Select, AutoComplete } from 'antd'
 import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 const { TextArea } = Input
 const { Text } = Typography
 const { Option } = Select
 
 function FormTruck({ id, truck, onFinish }) {
+  const dispatch = useDispatch()
   const [lengthDesc, setLengthDesc] = useState(0)
   const [lengthParkingAddress, setLengthParkingAddress] = useState(0)
   const [optionsSelected, setOptionsSelected] = useState([])
@@ -70,6 +72,14 @@ function FormTruck({ id, truck, onFinish }) {
     onFinish(values)
   }
 
+  useEffect(() => {
+    console.log()
+    return () => {
+      console.log('log')
+      dispatch({ type: 'UPDATE_TRUCK', payload: {} })
+    }
+  }, [])
+
   return (
     <Form
       initialValues={
@@ -100,6 +110,7 @@ function FormTruck({ id, truck, onFinish }) {
             message: 'Truck plate can not correct format!',
           },
         ]}
+        validateTrigger="onBlur"
       >
         <Input placeholder="Exp: 30A-12345 or 30A-1234" />
       </Form.Item>

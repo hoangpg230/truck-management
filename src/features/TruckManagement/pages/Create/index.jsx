@@ -1,16 +1,17 @@
-import { Typography } from 'antd'
 import React, { useEffect, useState } from 'react'
+import './Create.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Typography } from 'antd'
 
-import { getTruck } from '../../../../actions/truck'
 import FormTruck from '../../components/FormTruck'
 
-import './Create.css'
+import { getTruck } from '../../../../actions/truck'
 
 const { Title } = Typography
 
 const Create = () => {
+  const [idState, setIdState] = useState(null)
   const { requesting, truck, error } = useSelector((state) => state.truck)
   const dispatch = useDispatch()
 
@@ -26,20 +27,27 @@ const Create = () => {
       navigate('/truck')
     }
   }, [requesting, error])
-
+  var { id } = useParams()
   // Update
-  const { id } = useParams()
+  const _path = useLocation().pathname
+  const [path, setPath] = useState(_path)
 
+  useEffect(() => {
+    const action = () => ({ type: 'UPDATE_TRUCK', payload: {} })
+    dispatch(action())
+  }, [])
   useEffect(() => {
     if (id) {
       const action = () => ({ type: '_GET_TRUCK', payload: id })
       dispatch(action())
+
       return () => {
         const action = getTruck({})
         dispatch(action)
       }
     }
   }, [])
+  const history = useNavigate()
 
   const onFinish = (values) => {
     if (id) {
@@ -47,13 +55,13 @@ const Create = () => {
       const action = () => ({ type: '_UPDATE_TRUCK', payload: newValues })
       dispatch(action())
       setIsSubmit(true)
-    } else {
-      const action = () => ({ type: '_ADD_TRUCK', payload: values })
-      dispatch(action())
-      setIsSubmit(true)
     }
   }
 
+  useEffect(() => {
+    const action = () => ({ type: 'UPDATE_TRUCK', payload: {} })
+    dispatch(action())
+  }, [truck])
   return (
     <>
       <Title level={3} className="my-3">
