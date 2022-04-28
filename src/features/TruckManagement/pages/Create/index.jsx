@@ -28,6 +28,7 @@ const Create = () => {
     }
   }, [requesting, error])
   var { id } = useParams()
+  const accessId = id
   // Update
   const _path = useLocation().pathname
   const [path, setPath] = useState(_path)
@@ -47,7 +48,6 @@ const Create = () => {
       }
     }
   }, [])
-  const history = useNavigate()
 
   const onFinish = (values) => {
     if (id) {
@@ -62,6 +62,7 @@ const Create = () => {
     const action = () => ({ type: 'UPDATE_TRUCK', payload: {} })
     dispatch(action())
   }, [truck])
+
   return (
     <>
       <Title level={3} className="my-3">
@@ -74,7 +75,12 @@ const Create = () => {
           'loading...'
         ) : (
           truck.truckPlate && (
-            <FormTruck id={id} truck={truck} onFinish={onFinish} />
+            <FormTruck
+              id={id}
+              random={Math.random()}
+              truck={truck}
+              onFinish={onFinish}
+            />
           )
         )}
       </div>

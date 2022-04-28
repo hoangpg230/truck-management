@@ -6,7 +6,7 @@ const { TextArea } = Input
 const { Text } = Typography
 const { Option } = Select
 
-function FormTruck({ id, truck, onFinish }) {
+function FormTruck({ id, truck, onFinish, random }) {
   const dispatch = useDispatch()
   const [lengthDesc, setLengthDesc] = useState(0)
   const [lengthParkingAddress, setLengthParkingAddress] = useState(0)
@@ -21,6 +21,10 @@ function FormTruck({ id, truck, onFinish }) {
     if (id) {
       setLengthDesc(description.length)
       setLengthParkingAddress(pakingAddress.length)
+    }
+    if (!random) {
+      setLengthDesc(0)
+      setLengthParkingAddress(0)
     }
   }, [truck])
 
@@ -73,26 +77,28 @@ function FormTruck({ id, truck, onFinish }) {
   }
 
   useEffect(() => {
-    console.log()
     return () => {
-      console.log('log')
       dispatch({ type: 'UPDATE_TRUCK', payload: {} })
     }
   }, [])
+  const [form] = Form.useForm()
+
+  useEffect(() => {
+    if (random) {
+      form.setFieldsValue({
+        truckPlate,
+        cargoType,
+        diver,
+        pakingAddress,
+        description,
+      })
+    } else {
+      form.resetFields()
+    }
+  }, [form, random])
 
   return (
-    <Form
-      initialValues={
-        id && {
-          truckPlate,
-          cargoType,
-          diver,
-          pakingAddress,
-          description,
-        }
-      }
-      onFinish={handleFinish}
-    >
+    <Form form={form} onFinish={handleFinish}>
       <Form.Item
         label="Truck Plate"
         wrapperCol={{

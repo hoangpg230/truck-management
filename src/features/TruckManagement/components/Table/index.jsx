@@ -9,9 +9,6 @@ const { Text } = Typography
 export default ({ data, onDeleteRecord, defaultCurrent }) => {
   const [visible, setVisible] = useState(false)
   const [idTruck, setIdTruck] = useState(0)
-  useEffect(() => {
-    console.log(defaultCurrent)
-  })
 
   const onDelete = (id) => {
     showModal()
